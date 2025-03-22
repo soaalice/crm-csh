@@ -1,0 +1,41 @@
+# Ignore les fichiers générés par Visual Studio
+.vs/
+.vscode/
+.idea/
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+
+# Ignore les fichiers binaires et de build
+bin/
+obj/
+
+# Ignore les dossiers et fichiers de configuration spécifiques à l'utilisateur
+*.dbmdl
+*.bak
+*.Backup
+*.log
+*.vspscc
+# Pour les projets .NET Core (dotnet cli)
+project.lock.json
+project.fragment.lock.json
+
+# Ignore les fichiers de configuration de la base de données
+appsettings.json
+appsettings.Development.json
+appsettings.Production.json
+
+# Ignore les fichiers générés par le build ou les tests
+TestResults/
+*.vsix
+
+# Ignore les fichiers de configuration de JetBrains Rider
+.idea/
+
+# Ignore les fichiers temporaires de Windows
+Thumbs.db
+Desktop.ini
+
+# Fichiers générés par JetBrains Rider, ReSharper ou autres outils
+_ReSharper/
