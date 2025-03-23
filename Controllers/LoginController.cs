@@ -59,9 +59,9 @@ namespace crm_csh.Controllers
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
                     return RedirectToAction("Index", "Home");
-                }
-                else
-                {
+                } else if (response.StatusCode == System.Net.HttpStatusCode.NotFound) {
+                    throw new Exception("API introuvable");
+                } else {
                     throw new Exception("Identifiant ou mot de passe invalide");
                 }
             }
