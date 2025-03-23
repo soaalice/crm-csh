@@ -31,12 +31,21 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home"
                                     asp-action="Privacy">Privacy</a>
                             </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-dark" id="navbarDropdownConfig" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    Config
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdownConfig">
+                                    <li><a class="dropdown-item" asp-controller="Param" asp-action="AlertRateForm">Alert Rate</a></li>
+                                </ul>
+                            </li>
 
-                                <li class="nav-item">
-                                    <form asp-controller="Login" asp-action="Logout" method="post" class="d-inline">
-                                        <button type="submit" class="btn btn-link nav-link text-dark">Logout</button>
-                                    </form>
-                                </li>
+                            <li class="nav-item">
+                                <form asp-controller="Login" asp-action="Logout" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-link nav-link text-dark">Logout</button>
+                                </form>
+                            </li>
                         </ul>
                     </div>
                 }
