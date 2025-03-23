@@ -4,7 +4,14 @@
 
 <h2>@ViewData["Title"]</h2>
 
-<form method="post" asp-action="Login" asp-controller="Login">
+@if (ViewData["Error"] != null)
+{
+    <div class="alert alert-danger mt-3">
+        @ViewData["Error"]
+    </div>
+}
+
+<form method="post" asp-action="Login" asp-controller="Login" id="loginForm">
     <div class="form-group">
         <label for="username">Username</label>
         <input type="text" id="username" name="username" class="form-control" required />
@@ -13,12 +20,13 @@
         <label for="password">Password</label>
         <input type="password" id="password" name="password" class="form-control" required />
     </div>
-    <button type="submit" class="btn btn-primary">Login</button>
-
-    @if (ViewData["Error"] != null)
-    {
-        <div class="alert alert-danger mt-3">
-            @ViewData["Error"]
-        </div>
-    }
+    <button type="submit" class="btn btn-primary" id="submitBtn">
+        <span id="spinner" style="display:none;" class="spinner"></span> Login
+    </button>
 </form>
+
+<script>
+    document.getElementById("loginForm").onsubmit = function () {
+        showLoadingState('submitBtn', 'spinner');
+    };
+</script>
