@@ -53,8 +53,9 @@ public class TicketController : Controller
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> UpdateTicket(int id, double expense){
-        var content = new FormUrlEncodedContent(new[]
+    public async Task<IActionResult> UpdateTicket(int id, double expense)
+    {
+        var content = new FormUrlEncodedContent(new[] 
         {
             new KeyValuePair<string, string>("expense", expense.ToString())
         });
@@ -62,14 +63,28 @@ public class TicketController : Controller
         var response = await _httpClient.PostAsync($"{_apiUrl}/update/{id}", content);
         if (response.IsSuccessStatusCode)
         {
-            return RedirectToAction("Tickets");
+            TempData["SuccessMessage"] = "Ticket #"+id+" updated successfully.";
         }
         else
         {
-            ViewBag.ErrorMessage = "Failed to update the ticket.";
-            return RedirectToAction("Tickets");
+            TempData["ErrorMessage"] = "Failed to update the ticket.";
         }
+        return RedirectToAction("Tickets");
     }
 
-    // }
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> DeleteTicket(int id)
+    {
+        var response = await _httpClient.PostAsync($"{_apiUrl}/delete/{id}", null);
+        if (response.IsSuccessStatusCode)
+        {
+            TempData["SuccessMessage"] = "Ticket #"+id+" deleted successfully.";
+        }
+        else
+        {
+            TempData["ErrorMessage"] = "Failed to delete the ticket.";
+        }
+        return RedirectToAction("Tickets");
+    }
 }
