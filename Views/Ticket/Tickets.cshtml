@@ -1,0 +1,42 @@
+@model IEnumerable<crm_csh.Models.Ticket>
+
+<h1>Ticket List</h1>
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger">
+        @ViewBag.ErrorMessage
+    </div>
+}
+
+<table class="table">
+
+    <thead>
+        <tr>
+            <th>Subject</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Priority</th>
+            <th>Manager</th>
+            <th>Employee</th>
+            <th>Customer</th>
+            <th>Created At</th>
+            <th>Expense Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var ticket in Model)
+        {
+            <tr>
+                <td>@ticket.Subject</td>
+                <td>@ticket.Description</td>
+                <td>@ticket.Status</td>
+                <td>@ticket.Priority</td>
+                <td>@ticket.Manager?.Username</td>
+                <td>@ticket.Employee?.Username</td>
+                <td>@ticket.Customer?.Name</td>
+                <td>@ticket.CreatedAt.ToString("g")</td>
+                <td>@ticket.ExpenseAmount?.ToString("C")</td>
+            </tr>
+        }
+    </tbody>
+</table>
