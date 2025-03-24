@@ -50,4 +50,26 @@ public class TicketController : Controller
             return View("Tickets", new List<Ticket>());
         }
     }
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> UpdateTicket(int id, double expense){
+        var content = new FormUrlEncodedContent(new[]
+        {
+            new KeyValuePair<string, string>("expense", expense.ToString())
+        });
+
+        var response = await _httpClient.PostAsync($"{_apiUrl}/update/{id}", content);
+        if (response.IsSuccessStatusCode)
+        {
+            return RedirectToAction("Tickets");
+        }
+        else
+        {
+            ViewBag.ErrorMessage = "Failed to update the ticket.";
+            return RedirectToAction("Tickets");
+        }
+    }
+
+    // }
 }

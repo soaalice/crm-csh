@@ -9,7 +9,6 @@
 }
 
 <table class="table">
-
     <thead>
         <tr>
             <th>Subject</th>
@@ -21,6 +20,7 @@
             <th>Customer</th>
             <th>Created At</th>
             <th>Expense Amount</th>
+            <th>Update Expense</th> <!-- New column for updating expense -->
         </tr>
     </thead>
     <tbody>
@@ -36,6 +36,13 @@
                 <td>@ticket.Customer?.Name</td>
                 <td>@ticket.CreatedAt.ToString("g")</td>
                 <td>@ticket.ExpenseAmount?.ToString("C")</td>
+                <td>
+                    <form method="post" action="@Url.Action("UpdateTicket", "Ticket")">
+                        <input type="hidden" name="id" value="@ticket.TicketId" />
+                        <input type="number" name="expense" step="0.01" required />
+                        <button type="submit">Update</button>
+                    </form>
+                </td>
             </tr>
         }
     </tbody>
