@@ -1,63 +1,123 @@
 @model crm_csh.Models.DashboardDto
 
+<style>
+    .card-custom {
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .card-custom .card-body {
+        background-color: #f9f9f9;
+        padding: 20px;
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .chart-container {
+        margin-top: 40px;
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+    }
+
+    .chart-container canvas {
+        width: 100% !important;
+        height: 350px;
+    }
+
+    .alert {
+        margin-bottom: 20px;
+    }
+
+    .card-body p {
+        font-size: 1.2rem;
+        color: #555;
+        font-weight: bold;
+    }
+
+    a {
+        text-decoration: none;
+    }
+</style>
+
 <h1>Dashboard</h1>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <div class="container">
-    @if (ViewBag.ErrorMessage != null)
-    {
-        <div class="alert alert-danger">
-            @ViewBag.ErrorMessage
-        </div>
-    }
+    <div class="row">
+        <div class="col-md-12">
+            @if (ViewBag.ErrorMessage != null)
+            {
+                <div class="alert alert-danger">
+                    @ViewBag.ErrorMessage
+                </div>
+            }
 
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success">
-            @TempData["SuccessMessage"]
-        </div>
-    }
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success">
+                    @TempData["SuccessMessage"]
+                </div>
+            }
 
-    @if (TempData["ErrorMessage"] != null)
-    {
-        <div class="alert alert-danger">
-            @TempData["ErrorMessage"]
-        </div>
-    }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger">
+                    @TempData["ErrorMessage"]
+                </div>
+            }
 
-    @if (ViewBag.SuccessMessage != null)
-    {
-        <div class="alert alert-success">
-            @ViewBag.SuccessMessage
+            @if (ViewBag.SuccessMessage != null)
+            {
+                <div class="alert alert-success">
+                    @ViewBag.SuccessMessage
+                </div>
+            }
         </div>
-    }
+    </div>
+
     <div class="row">
         <div class="col-md-4">
-            <a href="@Url.Action("Customers", "Customer")" class="card card-link">
-                <div class="card-body">
+            <a href="@Url.Action("Customers", "Customer")" class="card card-custom">
+                <div class="card-body border-start border-5 border-primary">
                     <h5 class="card-title">Total Customers</h5>
                     <p class="card-text">@Model.TotalCustomers</p>
                 </div>
             </a>
         </div>
         <div class="col-md-4">
-            <a href="@Url.Action("Leads", "Lead")" class="card card-link">
-                <div class="card-body">
+            <a href="@Url.Action("Leads", "Lead")" class="card card-custom">
+                <div class="card-body border-start border-5 border-success">
                     <h5 class="card-title">Total Lead Expenses</h5>
                     <p class="card-text">@Model.TotalLeadExpenses</p>
                 </div>
             </a>
         </div>
         <div class="col-md-4">
-            <a href="@Url.Action("Tickets", "Ticket")" class="card card-link">
-                <div class="card-body">
+            <a href="@Url.Action("Tickets", "Ticket")" class="card card-custom">
+                <div class="card-body border-start border-5 border-danger">
                     <h5 class="card-title">Total Ticket Expenses</h5>
                     <p class="card-text">@Model.TotalTicketExpenses</p>
                 </div>
             </a>
         </div>
     </div>
-    <canvas id="expenseBudgetChart"></canvas>
+
+    <div class="chart-container">
+        <div>
+            <canvas id="expenseBudgetChart"></canvas>
+        </div>
+        <div style="flex: 1 1 45%; min-width: 300px;">
+            <canvas id="ticketStatusChart"></canvas>
+        </div>
+        <div style="flex: 1 1 45%; min-width: 300px;">
+            <canvas id="leadStatusChart"></canvas>
+        </div>
+    </div>
 </div>
 
 <script>
