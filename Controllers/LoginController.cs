@@ -24,7 +24,7 @@ namespace crm_csh.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Dashboard");
             }
 
             return View();
@@ -58,7 +58,7 @@ namespace crm_csh.Controllers
                     // Connexion de l'utilisateur
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Dashboard");
                 } else if (response.StatusCode == System.Net.HttpStatusCode.NotFound) {
                     throw new Exception("API introuvable");
                 } else {
@@ -87,13 +87,13 @@ namespace crm_csh.Controllers
                 else
                 {
                     ViewData["Error"] = "Erreur lors de la déconnexion de l'API.";
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Dashboard");
                 }
             }
             catch (Exception ex)
             {
                 ViewData["Error"] = "Une erreur s'est produite : " + ex.Message;
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Dashboard");
             }
         }
     }

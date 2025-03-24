@@ -36,10 +36,10 @@
             <th>Description</th>
             <th>Status</th>
             <th>Priority</th>
-            <th>Manager</th>
-            <th>Employee</th>
+            @* <th>Manager</th>
+            <th>Employee</th> *@
             <th>Customer</th>
-            <th>Created At</th>
+            @* <th>Created At</th> *@
             <th>Expense Amount</th>
             <th>Actions</th>
         </tr>
@@ -52,10 +52,10 @@
                 <td>@ticket.Description</td>
                 <td>@ticket.Status</td>
                 <td>@ticket.Priority</td>
-                <td>@ticket.Manager?.Username</td>
-                <td>@ticket.Employee?.Username</td>
+                @* <td>@ticket.Manager?.Username</td>
+                <td>@ticket.Employee?.Username</td> *@
                 <td>@ticket.Customer?.Name</td>
-                <td>@ticket.CreatedAt.ToString("g")</td>
+                @* <td>@ticket.CreatedAt.ToString("g")</td> *@
                 <td>
                     <form method="post" action="@Url.Action("UpdateTicket", "Ticket")" id="updateExpense">
                         <input type="hidden" name="id" value="@ticket.TicketId" />

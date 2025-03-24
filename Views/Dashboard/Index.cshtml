@@ -42,6 +42,18 @@
     a {
         text-decoration: none;
     }
+
+    .chart-message {
+        width: 70%;
+        height: 350px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .chart-container>div {
+        min-width: 400px;
+    }
 </style>
 
 <h1>Dashboard</h1>
@@ -111,10 +123,10 @@
         <div>
             <canvas id="expenseBudgetChart"></canvas>
         </div>
-        <div style="flex: 1 1 45%; min-width: 300px;">
+        <div>
             <canvas id="ticketStatusChart"></canvas>
         </div>
-        <div style="flex: 1 1 45%; min-width: 300px;">
+        <div>
             <canvas id="leadStatusChart"></canvas>
         </div>
     </div>
@@ -145,6 +157,8 @@
             }]
         },
         options: {
+            responsive: false,
+            maintainAspectRatio: false,
             scales: {
                 y: {
                     beginAtZero: true
@@ -152,4 +166,73 @@
             }
         }
     });
+
+    function generateColors(count) {
+        const colors = [];
+        const hueStep = 360 / count;
+
+        for (let i = 0; i < count; i++) {
+            const hue = i * hueStep;
+            colors.push(`hsla(${hue}, 70%, 60%, 0.7)`);
+            colors.push(`hsla(${hue}, 70%, 60%, 1)`);
+        }
+
+        return colors;
+    }
+
+    function createChartOrMessage(ctx, data, labels, chartTitle) {
+        if (data.length === 0) {
+            ctx.canvas.style.display = 'none';
+            const container = ctx.canvas.parentElement;
+            const message = document.createElement('div');
+            message.className = 'chart-message';
+            message.innerHTML = `<div class="alert alert-info">${chartTitle} : données indisponibles</div>`;
+            container.appendChild(message);
+        } else {
+            const bgColors = [];
+            const borderColors = [];
+            const colors = generateColors(data.length);
+
+            for (let i = 0; i < data.length; i++) {
+                bgColors.push(colors[i * 2]); // Couleur avec opacité
+                borderColors.push(colors[i * 2 + 1]); // Couleur pleine
+            }
+
+            return new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: bgColors,
+                        borderColor: borderColors,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        },
+                        title: {
+                            display: true,
+                            text: chartTitle
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    const ticketCtx = document.getElementById('ticketStatusChart').getContext('2d');
+    const ticketLabels = @Html.Raw(Json.Serialize(Model.TicketByStatus.Keys));
+    const ticketData = @Html.Raw(Json.Serialize(Model.TicketByStatus.Values));
+    createChartOrMessage(ticketCtx, ticketData, ticketLabels, 'Tickets par Statut');
+
+    const leadCtx = document.getElementById('leadStatusChart').getContext('2d');
+    const leadLabels = @Html.Raw(Json.Serialize(Model.LeadByStatus.Keys));
+    const leadData = @Html.Raw(Json.Serialize(Model.LeadByStatus.Values));
+    createChartOrMessage(leadCtx, leadData, leadLabels, 'Leads par Statut');
 </script>
