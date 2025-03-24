@@ -1,0 +1,95 @@
+@model crm_csh.Models.DashboardDto
+
+<h1>Dashboard</h1>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="container">
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.ErrorMessage
+        </div>
+    }
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    @if (ViewBag.SuccessMessage != null)
+    {
+        <div class="alert alert-success">
+            @ViewBag.SuccessMessage
+        </div>
+    }
+    <div class="row">
+        <div class="col-md-4">
+            <a href="@Url.Action("Customers", "Customer")" class="card card-link">
+                <div class="card-body">
+                    <h5 class="card-title">Total Customers</h5>
+                    <p class="card-text">@Model.TotalCustomers</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="@Url.Action("Leads", "Lead")" class="card card-link">
+                <div class="card-body">
+                    <h5 class="card-title">Total Lead Expenses</h5>
+                    <p class="card-text">@Model.TotalLeadExpenses</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="@Url.Action("Tickets", "Ticket")" class="card card-link">
+                <div class="card-body">
+                    <h5 class="card-title">Total Ticket Expenses</h5>
+                    <p class="card-text">@Model.TotalTicketExpenses</p>
+                </div>
+            </a>
+        </div>
+    </div>
+    <canvas id="expenseBudgetChart"></canvas>
+</div>
+
+<script>
+    const ctx = document.getElementById('expenseBudgetChart').getContext('2d');
+    const totalLeadExpenses = @Model.TotalLeadExpenses;
+    const totalTicketExpenses = @Model.TotalTicketExpenses;
+    const totalBudget = @Model.TotalBudget;
+
+    const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Total Expenses', 'Total Budget'],
+            datasets: [{
+                label: 'Comparison',
+                data: [totalLeadExpenses + totalTicketExpenses, totalBudget],
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(255, 99, 132, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 99, 132, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
