@@ -1,0 +1,83 @@
+@model IEnumerable<crm_csh.Models.Ticket>
+
+<h1>Ticket List</h1>
+@if (ViewBag.ErrorMessage != null)
+{
+    <div class="alert alert-danger">
+        @ViewBag.ErrorMessage
+    </div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+@if (ViewBag.SuccessMessage != null)
+{
+    <div class="alert alert-success">
+        @ViewBag.SuccessMessage
+    </div>
+}
+
+<table class="table table-responsive">
+    <thead>
+        <tr>
+            <th>Subject</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Priority</th>
+            @* <th>Manager</th>
+            <th>Employee</th> *@
+            <th>Customer</th>
+            @* <th>Created At</th> *@
+            <th>Expense Amount</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var ticket in Model)
+        {
+            <tr>
+                <td>@ticket.Subject</td>
+                <td>@ticket.Description</td>
+                <td>@ticket.Status</td>
+                <td>@ticket.Priority</td>
+                @* <td>@ticket.Manager?.Username</td>
+                <td>@ticket.Employee?.Username</td> *@
+                <td>@ticket.Customer?.Name</td>
+                @* <td>@ticket.CreatedAt.ToString("g")</td> *@
+                <td>
+                    <form method="post" action="@Url.Action("UpdateTicket", "Ticket")" id="updateExpense">
+                        <input type="hidden" name="id" value="@ticket.TicketId" />
+                        <input type="number" min="0" name="expense" value="@ticket.ExpenseAmount" step="0.01" required placeholder="Enter an amount..."/>
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                            <span id="spinner" style="display:none;" class="spinner"></span> Update
+                        </button>
+                    </form>
+                </td>
+                <td>    
+                    <form method="post" action="@Url.Action("DeleteTicket", "Ticket")" style="display:inline;">
+                        <input type="hidden" name="id" value="@ticket.TicketId" />
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this ticket?');">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    document.getElementById("updateExpense").onsubmit = function () {
+        showLoadingState('submitBtn', 'spinner');
+    };
+</script>

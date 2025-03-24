@@ -18,15 +18,17 @@
     </div>
 }
 
-<form method="post" asp-action="UpdateAlertRate" id="alertRateForm">
-    <div class="form-group">
-        <label for="paramValue">Alert Rate</label>
-        <input type="number" min="0" max="100" class="form-control" id="paramValue" name="paramValue" required />
-    </div>
-    <button type="submit" class="btn btn-primary" id="submitBtn">
-        <span id="spinner" style="display:none;" class="spinner" ></span> Update Alert Rate
-    </button>
-</form>
+<div class="col-4 m-auto">
+    <form method="post" asp-action="UpdateAlertRate" id="alertRateForm">
+        <div class="form-group">
+            <label for="paramValue">Alert Rate</label>
+            <input type="number" min="0" max="100" class="form-control" id="paramValue" name="paramValue" required />
+        </div>
+        <button type="submit" class="btn btn-primary mt-3 form-control" id="submitBtn">
+            <span id="spinner" style="display:none;" class="spinner" ></span> Update Alert Rate
+        </button>
+    </form>
+</div>
 
 <script>
     document.getElementById("alertRateForm").onsubmit = function () {

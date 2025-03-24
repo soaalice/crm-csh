@@ -1,0 +1,238 @@
+@model crm_csh.Models.DashboardDto
+
+<style>
+    .card-custom {
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+
+    .card-custom .card-body {
+        background-color: #f9f9f9;
+        padding: 20px;
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .chart-container {
+        margin-top: 40px;
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+    }
+
+    .chart-container canvas {
+        width: 100% !important;
+        height: 350px;
+    }
+
+    .alert {
+        margin-bottom: 20px;
+    }
+
+    .card-body p {
+        font-size: 1.2rem;
+        color: #555;
+        font-weight: bold;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    .chart-message {
+        width: 70%;
+        height: 350px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .chart-container>div {
+        min-width: 400px;
+    }
+</style>
+
+<h1>Dashboard</h1>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            @if (ViewBag.ErrorMessage != null)
+            {
+                <div class="alert alert-danger">
+                    @ViewBag.ErrorMessage
+                </div>
+            }
+
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success">
+                    @TempData["SuccessMessage"]
+                </div>
+            }
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger">
+                    @TempData["ErrorMessage"]
+                </div>
+            }
+
+            @if (ViewBag.SuccessMessage != null)
+            {
+                <div class="alert alert-success">
+                    @ViewBag.SuccessMessage
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <a href="@Url.Action("Customers", "Customer")" class="card card-custom">
+                <div class="card-body border-start border-5 border-primary">
+                    <h5 class="card-title">Total Customers</h5>
+                    <p class="card-text">@Model.TotalCustomers</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="@Url.Action("Leads", "Lead")" class="card card-custom">
+                <div class="card-body border-start border-5 border-success">
+                    <h5 class="card-title">Total Lead Expenses</h5>
+                    <p class="card-text">@Model.TotalLeadExpenses</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="@Url.Action("Tickets", "Ticket")" class="card card-custom">
+                <div class="card-body border-start border-5 border-danger">
+                    <h5 class="card-title">Total Ticket Expenses</h5>
+                    <p class="card-text">@Model.TotalTicketExpenses</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="chart-container">
+        <div>
+            <canvas id="expenseBudgetChart"></canvas>
+        </div>
+        <div>
+            <canvas id="ticketStatusChart"></canvas>
+        </div>
+        <div>
+            <canvas id="leadStatusChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+    const ctx = document.getElementById('expenseBudgetChart').getContext('2d');
+    const totalLeadExpenses = @Model.TotalLeadExpenses;
+    const totalTicketExpenses = @Model.TotalTicketExpenses;
+    const totalBudget = @Model.TotalBudget;
+
+    const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Total Expenses', 'Total Budget'],
+            datasets: [{
+                label: 'Comparison',
+                data: [totalLeadExpenses + totalTicketExpenses, totalBudget],
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(255, 99, 132, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 99, 132, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: false,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    function generateColors(count) {
+        const colors = [];
+        const hueStep = 360 / count;
+
+        for (let i = 0; i < count; i++) {
+            const hue = i * hueStep;
+            colors.push(`hsla(${hue}, 70%, 60%, 0.7)`);
+            colors.push(`hsla(${hue}, 70%, 60%, 1)`);
+        }
+
+        return colors;
+    }
+
+    function createChartOrMessage(ctx, data, labels, chartTitle) {
+        if (data.length === 0) {
+            ctx.canvas.style.display = 'none';
+            const container = ctx.canvas.parentElement;
+            const message = document.createElement('div');
+            message.className = 'chart-message';
+            message.innerHTML = `<div class="alert alert-info">${chartTitle} : données indisponibles</div>`;
+            container.appendChild(message);
+        } else {
+            const bgColors = [];
+            const borderColors = [];
+            const colors = generateColors(data.length);
+
+            for (let i = 0; i < data.length; i++) {
+                bgColors.push(colors[i * 2]); // Couleur avec opacité
+                borderColors.push(colors[i * 2 + 1]); // Couleur pleine
+            }
+
+            return new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: bgColors,
+                        borderColor: borderColors,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        },
+                        title: {
+                            display: true,
+                            text: chartTitle
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    const ticketCtx = document.getElementById('ticketStatusChart').getContext('2d');
+    const ticketLabels = @Html.Raw(Json.Serialize(Model.TicketByStatus.Keys));
+    const ticketData = @Html.Raw(Json.Serialize(Model.TicketByStatus.Values));
+    createChartOrMessage(ticketCtx, ticketData, ticketLabels, 'Tickets par Statut');
+
+    const leadCtx = document.getElementById('leadStatusChart').getContext('2d');
+    const leadLabels = @Html.Raw(Json.Serialize(Model.LeadByStatus.Keys));
+    const leadData = @Html.Raw(Json.Serialize(Model.LeadByStatus.Values));
+    createChartOrMessage(leadCtx, leadData, leadLabels, 'Leads par Statut');
+</script>
